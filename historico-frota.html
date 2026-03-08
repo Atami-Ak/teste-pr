@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIGA - Histórico da Frota</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/frota.css">
+    <style>
+        .historico-card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; border-left: 5px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+        .status-ok { border-left-color: var(--success); }
+        .status-avaria { border-left-color: var(--danger); background: #fef2f2; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .badge-natureza { background: #e2e8f0; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .badge-saida { background: #dbeafe; color: #1e40af; }
+        .badge-retorno { background: #fef3c7; color: #92400e; }
+        
+        .btn-ver-detalhes { background: #f1f5f9; color: var(--primary); border: 1px solid #cbd5e1; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 15px; }
+        .btn-ver-detalhes:hover { background: #e2e8f0; }
+
+        /* MODAL DE RELATÓRIO */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 15px; }
+        .modal.active { display: flex; }
+        .modal-content { background-color: #fff; border-radius: 12px; width: 100%; max-width: 750px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-header { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-radius: 12px 12px 0 0; }
+        .modal-header h3 { color: var(--primary); margin: 0; }
+        .close-modal { font-size: 1.8rem; cursor: pointer; color: #64748b; line-height: 1; }
+        .modal-body { padding: 20px; overflow-y: auto; }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-box { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
+        .info-box strong { color: var(--primary); display: block; margin-bottom: 3px; }
+
+        .tabela-checklist { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        .tabela-checklist th, .tabela-checklist td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+        .tabela-checklist th { background: var(--primary); color: white; position: sticky; top: 0; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="painel-frota.html" class="btn-back-header">←</a>
+            <div class="logo-container">
+                <h1 style="margin:0; font-size: 1.3rem;">SIGA <span style="font-size:0.8rem; font-weight:normal; color:#cbd5e1;">Frota</span></h1>
+            </div>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <a href="index.html" class="nav-item">🏠 Início</a>
+        <a href="maquinario.html" class="nav-item">⚙️ Maquinário</a>
+        <a href="limpeza.html" class="nav-item">🧹 Limpeza 5S</a>
+        <a href="painel-frota.html" class="nav-item active">🚛 Frota</a>
+    </nav>
+
+    <main class="container" style="padding: 0 20px 20px 20px;">
+        <h2 id="titulo-historico" style="color: var(--primary); margin-bottom: 20px;">Livro de Revisões</h2>
+        <div id="lista-historico"></div>
+    </main>
+
+    <div id="modal-detalhes" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Relatório de Inspeção</h3>
+                <span class="close-modal" onclick="fecharModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-grid">
+                    <div class="info-box"><strong>Veículo:</strong> <span id="mod-veiculo"></span></div>
+                    <div class="info-box"><strong>Data/Hora:</strong> <span id="mod-data"></span></div>
+                    <div class="info-box"><strong>Motorista:</strong> <span id="mod-motorista"></span></div>
+                    <div class="info-box"><strong>Quilometragem:</strong> <span id="mod-km"></span> km</div>
+                    <div class="info-box"><strong>Natureza/Destino:</strong> <span id="mod-rota"></span></div>
+                    <div class="info-box" id="box-status"><strong>Status:</strong> <span id="mod-status"></span></div>
+                </div>
+
+                <div id="mod-foto-container" style="display: none; margin-bottom: 20px; text-align: center; background: #fef2f2; border: 1px solid #f87171; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #dc2626; margin-top: 0;">📸 Evidência de Avaria</h4>
+                    <p id="mod-desc-avaria" style="color: #7f1d1d; font-size: 0.9rem; margin-bottom: 10px;"></p>
+                    <img id="mod-foto" src="" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #ef4444;">
+                </div>
+
+                <h4 style="color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;">Checklist Oficial</h4>
+                <div style="overflow-x: auto;">
+                    <table class="tabela-checklist">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;">Item Verificado</th>
+                                <th style="width: 30%; text-align: center;">Resposta</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mod-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay">
+        <div class="overlay-content">
+            <div class="spinner"></div>
+            <p style="color:white; font-weight:bold; margin-top:10px;">Buscando Histórico...</p>
+        </div>
+    </div>
+
+    <script type="module" src="js/app-historico-frota.js"></script>
+</body>
+</html>

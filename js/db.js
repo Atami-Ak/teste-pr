@@ -137,3 +137,32 @@ export async function obterTodasAuditoriasLimpeza() {
     (a, b) => (b.timestampEnvio || 0) - (a.timestampEnvio || 0)
   );
 }
+
+// =======================================================
+// MÓDULO 3: FROTA E VEÍCULOS (NOVO)
+// =======================================================
+export async function salvarChecklistFrota(payload, arquivoFoto) {
+  // Se houver foto de avaria, faz o upload primeiro
+  if (arquivoFoto) {
+    const nomeArquivo = `evidencias_frota/${Date.now()}_${payload.idVeiculo}.jpg`;
+    const storageRef = ref(storage, nomeArquivo);
+    const snapshot = await uploadBytes(storageRef, arquivoFoto);
+    payload.fotoUrl = await getDownloadURL(snapshot.ref);
+  }
+
+  payload.dataCriacaoOficial = serverTimestamp();
+  
+  // Salva no Firestore na coleção "checklists_frota"
+  const docRef = await addDoc(collection(db, "checklists_frota"), payload);
+  return docRef.id;
+}
+
+export async function obterHistoricoFrota() {
+  const q = query(collection(db, "checklists_frota"));
+  const querySnapshot = await getDocs(q);
+  let registros = [];
+  querySnapshot.forEach((doc) => registros.push({ id: doc.id, ...doc.data() }));
+
+  // Ordena do mais recente para o mais antigo, usando o timestamp que criámos na submissão
+  return registros.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+}

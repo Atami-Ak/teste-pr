@@ -1,4 +1,5 @@
 import { frotaDB, checklistPadrao, checklistMoto } from "./dados-frota.js";
+import { salvarChecklistFrota } from "./db.js";
 
 let checklistEmUso = [];
 
@@ -60,9 +61,6 @@ document.addEventListener("click", (e) => {
     if(e.target !== inputBusca) listaVeiculos.classList.remove("active");
 });
 
-// =======================================================
-// A MÁGICA: APLICA REGRAS ESPECÍFICAS PARA CADA VEÍCULO
-// =======================================================
 function aplicarVeiculoNoFormulario(veiculo) {
     inputBusca.value = `${veiculo.placa} - ${veiculo.modelo}`;
     inputVeiculoId.value = veiculo.id;
@@ -73,23 +71,35 @@ function aplicarVeiculoNoFormulario(veiculo) {
     inputBusca.style.fontWeight = "bold";
     inputBusca.style.color = "var(--success)";
 
-    // CONTROLE DINÂMICO DO MOTORISTA
     const blocoMotorista = document.getElementById("bloco-motorista");
     const inputMotorista = document.getElementById("nome-motorista");
+    
+    // VARIÁVEIS DO NOVO BLOCO DE DESTINO
+    const blocoDestino = document.getElementById("bloco-destino");
+    const inputDestino = document.getElementById("cidade-destino");
 
     if (veiculo.categoria === "Carros Leves" || veiculo.categoria === "Motos") {
-        // Esconde o campo e remove a obrigatoriedade
+        // Esconde MOTORISTA
         blocoMotorista.style.display = "none";
         inputMotorista.required = false;
-        inputMotorista.value = "Uso Compartilhado"; // Fantasma para não dar erro no DB
+        inputMotorista.value = "Uso Compartilhado"; 
+        
+        // Esconde DESTINO
+        blocoDestino.style.display = "none";
+        inputDestino.required = false;
+        inputDestino.value = "Uso Local / Base"; 
     } else {
-        // Exibe o campo para Caminhões
+        // Exibe MOTORISTA (Para Caminhões)
         blocoMotorista.style.display = "block";
         inputMotorista.required = true;
         inputMotorista.value = veiculo.motoristaPadrao || "";
+        
+        // Exibe DESTINO (Para Caminhões)
+        blocoDestino.style.display = "block";
+        inputDestino.required = true;
+        inputDestino.value = ""; 
     }
 
-    // CARREGA O CHECKLIST CERTO
     if (veiculo.categoria === "Motos") {
         checklistEmUso = checklistMoto;
     } else {
@@ -156,6 +166,12 @@ formFrota.addEventListener("submit", async (e) => {
         inputBusca.focus(); return;
     }
 
+    const btnNatureza = document.querySelector('input[name="natureza"]:checked');
+    if (!btnNatureza) {
+        alert("⚠️ ATENÇÃO: Indique se esta inspeção é de SAÍDA ou RETORNO.");
+        return;
+    }
+
     let respostasChecklist = [];
     let itensNaoConformes = [];
     let totalItensOficiais = checklistEmUso.reduce((acc, cat) => acc + cat.itens.length, 0);
@@ -188,7 +204,7 @@ formFrota.addEventListener("submit", async (e) => {
 
     const payload = {
         idVeiculo: inputVeiculoId.value,
-        natureza: document.querySelector('input[name="natureza"]:checked').value,
+        natureza: btnNatureza.value, 
         data: document.getElementById("data-inspecao").value,
         hora: document.getElementById("hora-inspecao").value,
         motorista: document.getElementById("nome-motorista").value,
@@ -203,14 +219,14 @@ formFrota.addEventListener("submit", async (e) => {
 
     overlay.classList.remove("hidden");
     try {
-        await new Promise(resolve => setTimeout(resolve, 2000)); 
-        console.log("DADOS ENVIADOS:", payload);
+        await salvarChecklistFrota(payload, arquivoEvidencia);
         
         overlay.classList.add("hidden");
-        alert("✅ Checklist Registrado com Sucesso!");
+        alert("✅ Checklist Salvo na Nuvem com Sucesso!");
         window.location.href = "painel-frota.html";
     } catch (error) {
+        console.error("Erro no envio:", error);
         overlay.classList.add("hidden");
-        alert("❌ Erro ao salvar.");
+        alert("❌ Erro ao salvar na nuvem. Verifique a sua conexão e as regras do Firebase.");
     }
 });

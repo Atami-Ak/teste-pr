@@ -6,6 +6,12 @@
     <title>SIGA - Inspeção de Veículo</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/frota.css">
+    <style>
+        .radio-natureza { display: flex; align-items: center; justify-content: center; flex: 1; height: 50px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; cursor: pointer; border: 2px solid #cbd5e1; background: #f8fafc; color: #64748b; transition: 0.2s; }
+        .radio-natureza input { display: none; } 
+        .radio-natureza:has(input[value="Saída"]:checked) { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; }
+        .radio-natureza:has(input[value="Retorno"]:checked) { background: #fffbeb; border-color: #f59e0b; color: #b45309; }
+    </style>
 </head>
 <body>
     <header class="main-header">
@@ -43,12 +49,8 @@
 
             <div class="form-section">
                 <div class="form-group" style="display: flex; gap: 15px; margin-bottom: 20px;">
-                    <label class="radio-btn" style="flex:1;">
-                        <input type="radio" name="natureza" value="Saída" required> 🛫 Saída
-                    </label>
-                    <label class="radio-btn" style="flex:1;">
-                        <input type="radio" name="natureza" value="Retorno" required> 🛬 Retorno
-                    </label>
+                    <label class="radio-natureza"><input type="radio" name="natureza" value="Saída"> 🛫 Saída</label>
+                    <label class="radio-natureza"><input type="radio" name="natureza" value="Retorno"> 🛬 Retorno</label>
                 </div>
 
                 <div class="grid-2" style="margin-bottom: 15px;">
@@ -61,7 +63,7 @@
                     <input type="text" id="nome-motorista" class="input-padrao" placeholder="Quem está conduzindo?">
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" id="bloco-destino">
                     <label>Cidade / Rota de Destino</label>
                     <input type="text" id="cidade-destino" class="input-padrao" placeholder="Ex: Teresina - PI" required>
                 </div>
