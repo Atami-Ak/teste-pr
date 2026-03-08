@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIGA - Painel de Frota</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/frota.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="index.html" class="btn-back-header" title="Voltar ao Menu Principal">←</a>
+            <div class="logo-container">
+                <h1 style="margin:0; font-size: 1.3rem;">SIGA <span style="font-size:0.8rem; font-weight:normal; color:#cbd5e1;">Frota</span></h1>
+            </div>
+        </div>
+        <div class="user-info">
+            <span style="font-size: 0.9rem; font-weight: bold">Operador</span>
+            <div class="avatar">O</div>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <a href="index.html" class="nav-item">🏠 Início</a>
+        <a href="maquinario.html" class="nav-item">⚙️ Maquinário</a>
+        <a href="limpeza.html" class="nav-item">🧹 Limpeza 5S</a>
+        <a href="painel-frota.html" class="nav-item active">🚛 Frota</a>
+    </nav>
+
+    <main class="container" style="padding: 0 20px 20px 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary); margin: 0; font-size: 1.4rem;">Garagem & Frota</h2>
+            <a href="frota.html" style="background: #f59e0b; color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 0.9rem; transition: 0.2s;">+ Busca Manual</a>
+        </div>
+        <p style="color: #64748b; margin-bottom: 25px;">Selecione o veículo abaixo para iniciar o Checklist Diário.</p>
+
+        <div id="frota-container"></div>
+    </main>
+
+    <script type="module" src="js/app-painel-frota.js"></script>
+</body>
+</html>
