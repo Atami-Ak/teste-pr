@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SIGA - Revisões e Histórico 5S</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/historico.css" />
+    <style>
+      .main-header { display: flex; align-items: center; justify-content: space-between; background: var(--primary, #004a99); color: white; padding: 15px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+      .header-left { display: flex; align-items: center; gap: 15px; }
+      .btn-back-header { color: white; text-decoration: none; font-size: 1.6rem; font-weight: bold; transition: transform 0.2s; line-height: 1; }
+      .logo-container h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+      .logo-container span { font-size: 0.8rem; color: #cbd5e1; }
+      .main-nav { display: flex; gap: 12px; padding: 15px 20px; background: white; overflow-x: auto; white-space: nowrap; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; }
+      .main-nav::-webkit-scrollbar { height: 4px; }
+      .main-nav::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      .nav-item { padding: 10px 18px; text-decoration: none; color: #475569; font-weight: 600; font-size: 0.95rem; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+      .nav-item.active { background: var(--primary, #004a99); color: white; border-color: var(--primary, #004a99); box-shadow: 0 4px 8px rgba(0, 74, 153, 0.25); }
+
+      .auditoria-card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; border-left: 5px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+      .auditoria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+      .auditoria-nota { font-size: 1.5rem; font-weight: 900; background: #f8fafc; padding: 10px; border-radius: 50%; min-width: 50px; text-align: center; }
+      .nota-alta { color: var(--success); border: 2px solid var(--success); }
+      .nota-media { color: var(--warning); border: 2px solid var(--warning); }
+      .nota-baixa { color: var(--danger); border: 2px solid var(--danger); }
+
+      /* BOTAO E MODAL DO RELATORIO */
+      .btn-ver-detalhes { background: #f1f5f9; color: var(--primary); border: 1px solid #cbd5e1; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .btn-ver-detalhes:hover { background: #e2e8f0; color: #003875; }
+
+      .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 15px; }
+      .modal.active { display: flex; }
+      .modal-content { background-color: #fff; border-radius: 12px; width: 100%; max-width: 750px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+      .modal-header { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-radius: 12px 12px 0 0; }
+      .modal-header h3 { color: var(--primary); margin: 0; }
+      .close-modal { font-size: 1.8rem; cursor: pointer; color: #64748b; line-height: 1; transition: 0.2s; }
+      .close-modal:hover { color: var(--danger); }
+      .modal-body { padding: 20px; overflow-y: auto; }
+      
+      .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+      .info-box { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
+      .info-box strong { color: var(--primary); display: block; margin-bottom: 3px; }
+
+      .tabela-checklist { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+      .tabela-checklist th, .tabela-checklist td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; vertical-align: middle; }
+      .tabela-checklist th { background: var(--primary); color: white; position: sticky; top: 0; }
+      
+      @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="header-left">
+        <a href="limpeza.html" class="btn-back-header">←</a>
+        <div class="logo-container">
+          <h1>SIGA</h1>
+          <span>Revisões 5S</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item">🏠 Início</a>
+      <a href="maquinario.html" class="nav-item">⚙️ Maquinário</a>
+      <a href="limpeza.html" class="nav-item active">🧹 Limpeza 5S</a>
+      <a href="#" class="nav-item">🚛 Frota</a>
+    </nav>
+
+    <main class="container">
+      <h2 style="color: var(--primary); margin-bottom: 20px">
+        Livro de Revisões (Log de Auditorias)
+      </h2>
+      <div id="lista-auditorias"></div>
+    </main>
+
+    <div id="modal-detalhes" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>📋 Relatório de Conformidade 5S</h3>
+          <span class="close-modal" onclick="fecharModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="info-grid">
+            <div class="info-box">
+              <strong>Zona Inspecionada:</strong> <span id="mod-zona"></span>
+            </div>
+            <div class="info-box">
+              <strong>Data e Hora:</strong> <span id="mod-data"></span>
+            </div>
+            <div class="info-box">
+              <strong>Responsável Avaliado:</strong> <span id="mod-resp"></span>
+            </div>
+            <div class="info-box" style="border: 2px solid var(--primary); background: #f0f4f8;">
+              <strong>Nota Final:</strong> <span id="mod-nota" style="font-size: 1.3rem; font-weight: 900;"></span>
+            </div>
+          </div>
+
+          <h4 style="color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;">Checklist Detalhado</h4>
+          <div style="overflow-x: auto;">
+            <table class="tabela-checklist">
+              <thead>
+                <tr>
+                  <th style="width: 5%;">#</th>
+                  <th style="width: 55%;">Item Verificado</th>
+                  <th style="width: 15%; text-align: center;">Resposta</th>
+                  <th style="width: 25%; text-align: center;">Evidência</th>
+                </tr>
+              </thead>
+              <tbody id="mod-tbody">
+                </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <strong>📝 Parecer Geral / Observações:</strong>
+            <p id="mod-obs" style="margin-top: 8px; color: #475569; font-size: 0.95rem; line-height: 1.5;"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="overlay" class="overlay">
+      <div class="overlay-content">
+        <div class="spinner"></div>
+        <p>Buscando revisões...</p>
+      </div>
+    </div>
+
+    <script type="module" src="js/app-historico-limpeza.js"></script>
+  </body>
+</html>

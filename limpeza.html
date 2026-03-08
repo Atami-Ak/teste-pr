@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>SIGA - Controle de Limpeza e 5S</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/limpeza.css" />
+    <style>
+      .podiums-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      @media (max-width: 800px) {
+        .podiums-wrapper {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="header-left">
+        <div class="logo-container">
+          <h1>SIGA</h1>
+          <span>Facilities & 5S</span>
+        </div>
+      </div>
+      <div class="user-info">
+        <span style="font-size: 0.9rem; font-weight: bold">Auditor</span>
+        <div class="avatar">A</div>
+      </div>
+    </header>
+
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item">🏠 Início</a>
+      <a href="maquinario.html" class="nav-item">⚙️ Maquinário</a>
+      <a href="limpeza.html" class="nav-item active">🧹 Limpeza 5S</a>
+      <a href="#" class="nav-item">🚛 Frota</a>
+    </nav>
+
+    <main class="container">
+      <div class="podiums-wrapper">
+        <div class="podium-container" style="margin-bottom: 0">
+          <div class="podium-info">
+            <h3>🥇 Destaque da Semana</h3>
+            <h2 id="destaque-semana-nome">Apurando...</h2>
+            <p>Maior média de notas nos últimos 7 dias.</p>
+          </div>
+          <div class="podium-score" id="destaque-semana-nota">--</div>
+        </div>
+
+        <div
+          class="podium-container"
+          style="
+            margin-bottom: 0;
+            background: linear-gradient(135deg, #10b981, #065f46);
+          "
+        >
+          <div class="podium-info">
+            <h3 style="color: #d1fae5">🏆 Destaque do Mês</h3>
+            <h2 id="destaque-mes-nome">Apurando...</h2>
+            <p style="color: #a7f3d0">
+              Maior média de notas nos últimos 30 dias.
+            </p>
+          </div>
+          <div
+            class="podium-score"
+            id="destaque-mes-nota"
+            style="background: white; color: #065f46; border-color: #d1fae5"
+          >
+            --
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="section-header"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        "
+      >
+        <h2 style="color: var(--text)">Zonas de Inspeção</h2>
+        <a
+          href="historico-limpeza.html"
+          style="
+            color: var(--primary);
+            font-weight: bold;
+            text-decoration: none;
+          "
+          >Ver Histórico e Revisões ➔</a
+        >
+      </div>
+
+      <div class="grid-zonas" id="grid-zonas"></div>
+    </main>
+
+    <script type="module" src="js/app-limpeza.js"></script>
+  </body>
+</html>

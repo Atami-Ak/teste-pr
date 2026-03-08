@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>SIGA - Ordem de Serviço</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/formulario.css" />
+    <style>
+      /* Estilos da Navegação Global */
+      .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--primary, #004a99);
+        color: white;
+        padding: 15px 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .btn-back-header {
+        color: white;
+        text-decoration: none;
+        font-size: 1.6rem;
+        font-weight: bold;
+        transition: transform 0.2s;
+        line-height: 1;
+      }
+      .btn-back-header:hover {
+        transform: scale(1.1);
+      }
+      .logo-container h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+      }
+      .logo-container span {
+        font-size: 0.8rem;
+        color: #cbd5e1;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .avatar {
+        background: white;
+        color: var(--primary, #004a99);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.1rem;
+      }
+      .main-nav {
+        display: flex;
+        gap: 12px;
+        padding: 15px 20px;
+        background: white;
+        overflow-x: auto;
+        white-space: nowrap;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .main-nav::-webkit-scrollbar {
+        height: 4px;
+      }
+      .main-nav::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .nav-item {
+        padding: 10px 18px;
+        text-decoration: none;
+        color: #475569;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-item:hover {
+        background: #e2e8f0;
+        color: var(--primary, #004a99);
+      }
+      .nav-item.active {
+        background: var(--primary, #004a99);
+        color: white;
+        border-color: var(--primary, #004a99);
+        box-shadow: 0 4px 8px rgba(0, 74, 153, 0.25);
+      }
+      .page-title {
+        color: var(--primary);
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="header-left">
+        <a
+          href="maquinario.html"
+          class="btn-back-header"
+          title="Voltar ao Painel"
+          >←</a
+        >
+        <div class="logo-container">
+          <h1>SIGA</h1>
+          <span>Gestão de Ativos</span>
+        </div>
+      </div>
+      <div class="user-info">
+        <span style="font-size: 0.9rem; font-weight: bold">Operador</span>
+        <div class="avatar">O</div>
+      </div>
+    </header>
+
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item">🏠 Início</a>
+      <a href="maquinario.html" class="nav-item active">⚙️ Maquinário</a>
+      <a href="limpeza.html" class="nav-item">🧹 Limpeza 5S</a>
+      <a href="#" class="nav-item">🚛 Frota</a>
+    </nav>
+
+    <main class="container">
+      <h2 class="page-title" id="titulo-pagina">Registro de Atividade</h2>
+      <form id="form-detalhado" class="form-siga">
+        <div class="form-header">
+          <span class="tag-id" id="display-id">---</span>
+          <h3 id="display-nome">Carregando Equipamento...</h3>
+        </div>
+
+        <div class="box-sessao">
+          <div>
+            <label>Operador Autenticado</label>
+            <div id="nome-tecnico-display">⏳ Aguardando...</div>
+          </div>
+          <span style="font-size: 1.5rem">👷</span>
+        </div>
+
+        <div class="box-seguranca hidden-smart" id="box-seguranca">
+          <label class="checkbox-seguranca">
+            <input type="checkbox" id="check-seguranca" />
+            Confirmo que a máquina está bloqueada e desenergizada (LOTO /
+            NR-12).
+          </label>
+        </div>
+
+        <div class="form-section">
+          <h4 class="section-title">1. Parâmetros da Manutenção</h4>
+          <div class="form-group">
+            <label for="tipo-manutencao">Tipo de Intervenção</label>
+            <select id="tipo-manutencao" class="input-padrao" required>
+              <option value="" disabled selected>
+                Selecione a classificação...
+              </option>
+              <option value="Inspecao">👁️ Inspeção Diária / Preditiva</option>
+              <option value="Preventiva">
+                🛠️ Preventiva (Agendada/Rotina)
+              </option>
+              <option value="Corretiva">🔧 Corretiva (Falha/Quebra)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Condição Atual do Ativo</label>
+            <div class="status-selector" id="status-group">
+              <button
+                type="button"
+                class="btn-status"
+                data-status="Operacional"
+              >
+                🟢 Operacional
+              </button>
+              <button type="button" class="btn-status" data-status="Revisão">
+                🟡 Restrição / Revisar
+              </button>
+              <button type="button" class="btn-status" data-status="Parada">
+                🔴 Parada/Falha
+              </button>
+              <button type="button" class="btn-status" data-status="Troca">
+                ⚫ Em Troca
+              </button>
+            </div>
+            <input type="hidden" id="status-selecionado" required />
+          </div>
+        </div>
+
+        <div class="form-section hidden-smart" id="secao-medidores">
+          <h4 class="section-title">2. Leituras Operacionais (CBM)</h4>
+          <div class="grid-2col">
+            <div class="form-group">
+              <label for="horimetro">Horímetro (Horas rodadas)</label>
+              <input
+                type="number"
+                id="horimetro"
+                class="input-padrao"
+                placeholder="Ex: 12500"
+              />
+            </div>
+            <div class="form-group">
+              <label for="temperatura">Temperatura (°C)</label>
+              <input
+                type="number"
+                id="temperatura"
+                class="input-padrao"
+                placeholder="Ex: 85"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="form-section box-alerta hidden-smart"
+          id="secao-diagnostico"
+        >
+          <h4 id="titulo-diagnostico">3. Análise de Falha e Diagnóstico</h4>
+
+          <div class="form-group">
+            <label for="local-falha">Subconjunto Afetado</label>
+            <select id="local-falha" class="input-padrao">
+              <option value="" selected>Geral / Equipamento Completo</option>
+              <option value="Motor/Acionamento">⚙️ Motor / Acionamento</option>
+              <option value="Painel Eletrico">
+                ⚡ Painel Elétrico / Sensores
+              </option>
+              <option value="Transmissao/Rolamentos">
+                🔩 Transmissão / Rolamentos
+              </option>
+              <option value="Estrutura Mecanica">
+                🏗️ Estrutura Mecânica / Chassi
+              </option>
+              <option value="Lubrificacao/Fluidos">
+                💧 Lubrificação / Hidráulica
+              </option>
+            </select>
+          </div>
+
+          <div class="grid-2col">
+            <div class="form-group">
+              <label>Sintoma (O que ocorreu?)</label>
+              <select id="sintoma-falha" class="input-padrao">
+                <option value="Nenhum">Nenhum / Rotina</option>
+                <option value="Ruido Anormal">Ruído Anormal</option>
+                <option value="Vibracao">Vibração Excessiva</option>
+                <option value="Vazamento">Vazamento (Óleo/Água)</option>
+                <option value="Aquecimento">Aquecimento</option>
+                <option value="Parada Subita">Parada Súbita/Desarme</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Causa Raiz Suspeita</label>
+              <select id="causa-raiz" class="input-padrao">
+                <option value="Nao Aplicavel">Não Aplicável / Rotina</option>
+                <option value="Desgaste Natural">Desgaste Natural</option>
+                <option value="Falha Operacional">Falha Operacional</option>
+                <option value="Sobrecarga/Eletrica">
+                  Falta de Fase/Sobrecarga
+                </option>
+                <option value="Falta Lubrificacao">
+                  Falta de Lubrificação
+                </option>
+                <option value="Desconhecida">Desconhecida</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" id="bloco-acao-tomada">
+            <label>Ação Tomada</label>
+            <select id="acao-tomada" class="input-padrao">
+              <option value="Inspecionado">Apenas Inspecionado</option>
+              <option value="Ajustado">Ajustado / Calibrado</option>
+              <option value="Substituido">Componente Substituído</option>
+              <option value="Lubrificado">Limpeza / Lubrificação</option>
+              <option value="Pendente">Ação Pendente (Aguardando Peça)</option>
+            </select>
+          </div>
+
+          <div class="grid-2col" id="bloco-urgencia">
+            <div class="form-group">
+              <label>Prioridade</label>
+              <select id="urgencia-revisao" class="input-padrao">
+                <option value="Baixa">🟢 Baixa</option>
+                <option value="Média">🟡 Média (15 dias)</option>
+                <option value="Alta">🔴 Alta (48h)</option>
+                <option value="Critica">🚨 CRÍTICA (Imediato)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label id="label-data-limite">Retorno / Prazo</label>
+              <input type="date" id="data-limite" class="input-padrao" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section hidden-smart" id="secao-recursos">
+          <h4 class="section-title" id="titulo-recursos">
+            4. Tempos e Recursos
+          </h4>
+
+          <div
+            class="grid-2col"
+            id="bloco-datas-os"
+            style="margin-bottom: 15px"
+          >
+            <div class="form-group">
+              <label for="data-inicio">Data/Hora Início da O.S.</label>
+              <input
+                type="datetime-local"
+                id="data-inicio"
+                class="input-padrao"
+              />
+            </div>
+            <div class="form-group">
+              <label for="data-fim">Data/Hora Término da O.S.</label>
+              <input type="datetime-local" id="data-fim" class="input-padrao" />
+            </div>
+          </div>
+
+          <div class="grid-2col" id="bloco-tempos">
+            <div class="form-group">
+              <label for="tempo-parada">Máquina Parada (Hrs)</label>
+              <input
+                type="number"
+                id="tempo-parada"
+                class="input-padrao"
+                placeholder="Downtime"
+                step="0.5"
+                min="0"
+              />
+            </div>
+            <div class="form-group">
+              <label for="tempo-trabalho">Hrs Trab. Técnico</label>
+              <input
+                type="number"
+                id="tempo-trabalho"
+                class="input-padrao"
+                placeholder="Man-hours"
+                step="0.5"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div class="form-group box-destaque" id="secao-pecas">
+            <label id="label-pecas">Lista de Peças e Materiais (BOM)</label>
+            <div id="sugestoes-pecas" class="sugestoes-container"></div>
+            <div class="input-group">
+              <input
+                type="text"
+                id="input-nome-peca"
+                class="input-padrao"
+                placeholder="Buscar peça..."
+              />
+              <input
+                type="number"
+                id="input-qtd-peca"
+                class="input-padrao"
+                placeholder="Qtd"
+                min="1"
+                style="width: 80px"
+              />
+              <button type="button" id="btn-add-peca" class="btn-add">+</button>
+            </div>
+            <ul id="lista-pecas-ui" class="lista-dinamica"></ul>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4 class="section-title">5. Evidências e Fechamento</h4>
+          <div class="form-group">
+            <label for="relatorio" id="label-relatorio"
+              >Relatório Técnico / Observações</label
+            >
+            <textarea
+              id="relatorio"
+              class="input-padrao"
+              placeholder="Descreva os detalhes..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="header-fotos">
+              <label>Evidências Visuais</label>
+              <span class="contador-badge"
+                ><span id="contador-fotos">0</span>/20 fotos</span
+              >
+            </div>
+            <label for="foto-input" class="btn-camera"
+              >📸 Capturar ou Anexar Imagens</label
+            >
+            <input
+              type="file"
+              id="foto-input"
+              accept="image/*"
+              capture="environment"
+              multiple
+              hidden
+            />
+            <div id="preview-gallery" class="preview-grid"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          FINALIZAR O.S. / REGISTRO
+        </button>
+      </form>
+    </main>
+
+    <div id="overlay" class="overlay hidden">
+      <div class="overlay-content">
+        <div class="spinner"></div>
+        <p id="overlay-text">Sincronizando com a Nuvem...</p>
+      </div>
+    </div>
+
+    <script type="module" src="js/app-formulario.js"></script>
+  </body>
+</html>
